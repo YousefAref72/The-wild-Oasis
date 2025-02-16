@@ -1,7 +1,9 @@
 import app from "./app.js";
 import pkg from "pg";
-const { Pool } = pkg;
 import dotenv from "dotenv";
+
+const { Pool } = pkg;
+
 dotenv.config();
 const PORT = process.env.PORT || 8000;
 

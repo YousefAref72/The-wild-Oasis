@@ -27,6 +27,26 @@ const addCabin = async (attributes) => {
   }
 };
 
+const updateCabinDb = async (toBeUpdated, cabin_id) => {
+  let query = `update Cabins SET `;
+  let cnt = 0;
+  Object.entries(toBeUpdated).forEach(([k, v]) => {
+    if (cnt && v) query += " , ";
+    if (v || v === 0) {
+      query += k + " = " + `$${++cnt}`;
+    }
+  });
+  query += ` where cabin_id = $${++cnt}
+      returning *`;
+  const readyAtt = Object.values(toBeUpdated).filter((val) => {
+    if (val || val === 0) {
+      return val + "";
+    }
+  });
+  const updatedCabin = await pool.query(query, [...readyAtt, cabin_id]);
+  if (updatedCabin.rowCount) return updatedCabin.rows[0];
+};
+
 const removeCabin = async (id) => {
   try {
     const query = `delete from cabins where cabin_id = $1`;
@@ -38,4 +58,4 @@ const removeCabin = async (id) => {
     return error;
   }
 };
-export { addCabin, retrieveCabins, removeCabin };
+export { addCabin, retrieveCabins, updateCabinDb, removeCabin };

@@ -2,6 +2,7 @@ import {
   addCabin,
   removeCabin,
   retrieveCabins,
+  updateCabinDb,
 } from "../database/cabinDatabase.js";
 import AppError from "../utils/AppError.js";
 import catchAsync from "../utils/catchAsync.js";
@@ -61,6 +62,30 @@ const createCabin = catchAsync(async (req, res, next) => {
   });
 });
 
+const updateCabin = catchAsync(async (req, res, next) => {
+  let { name, discount, regular_price, max_capacity, description, image } =
+    req.body;
+  const { id: cabin_id } = req.params;
+
+  const toBeUpdated = {
+    name,
+    discount,
+    regular_price,
+    max_capacity,
+    description,
+    image,
+  };
+
+  const results = await updateCabinDb(toBeUpdated, cabin_id);
+  if (results.severity === "ERROR") {
+    return next(new AppError("couldn't Update this Cabin", 400));
+  }
+  res.status(200).json({
+    status: "successful",
+    data: { results },
+  });
+});
+
 const deleteCabin = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
@@ -74,4 +99,4 @@ const deleteCabin = catchAsync(async (req, res, next) => {
   });
 });
 
-export { createCabin, getCabins, deleteCabin };
+export { createCabin, getCabins, updateCabin, deleteCabin };

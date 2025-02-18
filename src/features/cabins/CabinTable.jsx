@@ -41,7 +41,6 @@ function CabinTable() {
     queryFn: getCabins,
   });
   if (isPending) return <Spinner />;
-  console.log(data.data.cabins);
   return (
     <Table>
       <TableHeader>

@@ -21,7 +21,7 @@ import useEditCabin from "./useEditCabin";
 //   color: var(--color-red-700);
 // `;
 
-function CreateCabinForm({ toEdit = {} }) {
+function CreateCabinForm({ toEdit = {}, onCloseModal }) {
   //editing
   const { cabin_id: edit_id, ...editValues } = toEdit;
   const isEditing = Boolean(toEdit.cabin_id);
@@ -44,12 +44,18 @@ function CreateCabinForm({ toEdit = {} }) {
       );
       let image = undefined;
       if (typeof data.image[0] !== "string") image = data.image[0];
-      editCabin({ cabin_id: id, ...toEdit, image });
+      editCabin(
+        { cabin_id: id, ...toEdit, image },
+        {
+          onSuccess: () => onCloseModal?.(),
+        }
+      );
     } else
       createCabin(
         { ...data, image: data.image[0] },
         {
           onSuccess: (data) => {
+            onCloseModal?.();
             reset();
           },
         }
@@ -57,7 +63,10 @@ function CreateCabinForm({ toEdit = {} }) {
   }
   if (isCreating || isUpdating) return <Spinner />;
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit)}
+      type={onCloseModal ? "modal" : "regular"}
+    >
       <FormRow label="name" error={errors?.name?.message}>
         <Input
           type="text"
@@ -131,7 +140,7 @@ function CreateCabinForm({ toEdit = {} }) {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset">
+        <Button variation="secondary" type="reset" onClick={onCloseModal}>
           Cancel
         </Button>
         <Button>{isEditing ? "Edit cabin" : "Create new cabin"}</Button>

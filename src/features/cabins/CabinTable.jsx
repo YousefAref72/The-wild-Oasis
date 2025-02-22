@@ -4,6 +4,7 @@ import { getCabins } from "../../API/cabinsApi";
 import Spinner from "../../ui/Spinner";
 import CabinRow from "./CabinRow";
 import Menus from "../../ui/Menus";
+import { useSearchParams } from "react-router-dom";
 // v2
 // Right now this is not really reusable... But we will want to use a similar table for guests as well, but with different columns. ALSO, right now we are defining these columns in BOTH the TableHeader and the CabinRow, which is not good at all. Instead, it would be much better to simply pass the columns into the Table, and the table would give access to the columns to both the header and row. So how can we do that? Well we can again use a compound component! We don't HAVE to do it like this, there's a million ways to implement a table, also without CSS Grid, but this is what I chose
 
@@ -41,7 +42,29 @@ function CabinTable() {
     queryKey: ["cabins"],
     queryFn: getCabins,
   });
+
+  const [searchParams] = useSearchParams();
+
   if (isPending) return <Spinner />;
+  // 1) Filtering
+  const currentFilter = searchParams.get("discount") || "all";
+
+  let filteredCabins;
+  if (currentFilter === "all") filteredCabins = data.data.cabins;
+  if (currentFilter === "no-discount")
+    filteredCabins = data.data.cabins.filter((cabin) => cabin.discount === 0);
+  if (currentFilter === "with-discount")
+    filteredCabins = data.data.cabins.filter((cabin) => cabin.discount > 0);
+
+  // 2) Sorting
+  const currentSort = searchParams.get("sort") || "start_date-asc";
+  const [field, direction] = currentSort.split("-");
+  const multiplier = direction === "asc" ? 1 : -1;
+
+  const sortedCabins = filteredCabins.sort(
+    (a, b) => (a[field] - b[field]) * multiplier
+  );
+
   return (
     <Menus>
       <Table>
@@ -53,7 +76,7 @@ function CabinTable() {
           <div>discount</div>
           <div></div>
         </TableHeader>
-        {data.data.cabins.map((cabin) => (
+        {sortedCabins.map((cabin) => (
           <CabinRow cabin={cabin} key={cabin.cabin_id}></CabinRow>
         ))}
       </Table>

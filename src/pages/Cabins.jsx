@@ -4,12 +4,13 @@ import Row from "../ui/Row";
 import CabinTable from "../features/cabins/CabinTable.jsx";
 
 import AddCabin from "../features/cabins/AddCabin.jsx";
+import CabinTableOperations from "../features/cabins/CabinTableOperations.jsx";
 function Cabins() {
   return (
     <>
       <Row type="horizontal">
         <Heading as="h1">All cabins</Heading>
-        <span>Sort/Filter</span>
+        <CabinTableOperations />
         {/* <img src="https://dclaevazetcjjkrzczpc.supabase.co/storage/v1/object/public/cabin-images/cabin-001.jpg" /> */}
       </Row>
       <Row>

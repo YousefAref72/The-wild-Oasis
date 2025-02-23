@@ -5,9 +5,8 @@ const formatString = (string) => {
 };
 
 const filtersQueryHandler = (query, validAttributes) => {
-  console.log(query);
   if (
-    !Object.entries(query).some((filter) => !validAttributes.includes(filter))
+    Object.entries(query).some((filter) => !validAttributes.includes(filter[0]))
   )
     return false;
 
@@ -17,6 +16,13 @@ const filtersQueryHandler = (query, validAttributes) => {
   });
   // console.log(filters);
   return filters;
+};
+
+const fieldsQueryHandler = (query, validFields) => {
+  if (!query.fields) return [];
+  const fields = query.fields.split(",");
+  if (fields.some((field) => !validFields.includes(field))) return false;
+  return fields;
 };
 
 const globalErrorHandler = async (err, req, res, next) => {
@@ -29,4 +35,9 @@ const globalErrorHandler = async (err, req, res, next) => {
   });
 };
 
-export { formatString, filtersQueryHandler, globalErrorHandler };
+export {
+  formatString,
+  filtersQueryHandler,
+  fieldsQueryHandler,
+  globalErrorHandler,
+};

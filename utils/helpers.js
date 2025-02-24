@@ -25,6 +25,15 @@ const fieldsQueryHandler = (query, validFields) => {
   return fields;
 };
 
+const sortQueryHandler = (query, validFields) => {
+  if (!query.sort) return [];
+  let fields = query.sort.split(",");
+  if (fields.some((field) => !validFields.includes(field.split("-")[0])))
+    return false;
+  fields = fields.map((field) => `${field.split("-").join(" ")}`);
+  return fields;
+};
+
 const globalErrorHandler = async (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
@@ -39,5 +48,6 @@ export {
   formatString,
   filtersQueryHandler,
   fieldsQueryHandler,
+  sortQueryHandler,
   globalErrorHandler,
 };

@@ -6,7 +6,7 @@ const retrieveCabins = async (filters) => {
     "cabin_id,name, discount, regular_price, max_capacity, description, image ";
 
   query += " from cabins ";
-  if (filters) {
+  if (filters.length) {
     query += "where " + filters.join(" AND ");
   }
   const cabins = await pool.query(query);

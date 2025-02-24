@@ -1,6 +1,10 @@
 import { retrieveBookings } from "../database/bookingDatabase.js";
 import catchAsync from "../utils/catchAsync.js";
-import { fieldsQueryHandler, filtersQueryHandler } from "../utils/helpers.js";
+import {
+  fieldsQueryHandler,
+  filtersQueryHandler,
+  sortQueryHandler,
+} from "../utils/helpers.js";
 
 const validFields = [
   "booking_id",
@@ -19,12 +23,15 @@ const validFields = [
 ];
 
 const getBookings = catchAsync(async (req, res, next) => {
+  const sort = sortQueryHandler(req.query, validFields);
+
+  delete req.query.sort;
   const fields = fieldsQueryHandler(req.query, validFields);
 
   delete req.query.fields;
 
   const filters = filtersQueryHandler(req.query, validFields);
-  const bookings = await retrieveBookings(fields, filters);
+  const bookings = await retrieveBookings(fields, filters, sort);
 
   res.status(200).json({
     status: "successful",

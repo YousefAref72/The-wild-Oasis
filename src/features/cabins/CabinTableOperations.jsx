@@ -5,7 +5,14 @@ import TableOperations from "../../ui/TableOperations";
 function CabinTableOperations() {
   return (
     <TableOperations>
-      <Filter />
+      <Filter
+        filterField="discount"
+        options={[
+          { value: "all", label: "All" },
+          { value: "no-discount", label: "No discount" },
+          { value: "with-discount", label: "With discount" },
+        ]}
+      />
       <SortBy
         options={[
           { value: "name-asc", label: "Sort by name (A-Z)" },

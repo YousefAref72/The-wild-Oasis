@@ -30,8 +30,11 @@ const getBookings = catchAsync(async (req, res, next) => {
 
   delete req.query.fields;
 
+  const page = req.query.page || 1;
+  delete req.query.page;
+
   const filters = filtersQueryHandler(req.query, validFields);
-  const bookings = await retrieveBookings(fields, filters, sort);
+  const bookings = await retrieveBookings(fields, filters, sort, page);
 
   res.status(200).json({
     status: "successful",

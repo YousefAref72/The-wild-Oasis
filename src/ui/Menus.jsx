@@ -82,18 +82,24 @@ function Menus({ children }) {
     </MenusContext.Provider>
   );
 }
+
 function Toggle({ id }) {
-  const { open, openId, close, setPosition } = useContext(MenusContext);
-  function handleToggle(e) {
+  const { openId, close, open, setPosition } = useContext(MenusContext);
+
+  function handleClick(e) {
+    e.stopPropagation();
+
     const rect = e.target.closest("button").getBoundingClientRect();
     setPosition({
       x: window.innerWidth - rect.width - rect.x,
       y: rect.y + rect.height + 8,
     });
+
     openId === "" || openId !== id ? open(id) : close();
   }
+
   return (
-    <StyledToggle onClick={handleToggle}>
+    <StyledToggle onClick={handleClick}>
       <HiEllipsisVertical />
     </StyledToggle>
   );

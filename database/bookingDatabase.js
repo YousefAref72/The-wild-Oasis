@@ -20,6 +20,7 @@ const retrieveBookings = async (fields = [], filters = [], sort = [], page) => {
     b.cabin_price,
     b.total_price,
     b.status,
+    b.is_paid,
     b.has_breakfast,
     b.observations,
     b.cabin_id,
@@ -52,6 +53,7 @@ const retrieveBookings = async (fields = [], filters = [], sort = [], page) => {
     b.status,
     b.has_breakfast,
     b.observations,
+    b.is_paid,
     b.cabin_id,
     b.guest_id, 
     c.name ,
@@ -63,4 +65,43 @@ const retrieveBookings = async (fields = [], filters = [], sort = [], page) => {
   const bookings = await pool.query(query);
   if (bookings.rowCount) return bookings.rows;
 };
-export { retrieveBookings };
+
+const editBooking = async (toBeUpdated, booking_id) => {
+  try {
+    let query = `update Bookings SET `;
+    let cnt = 0;
+    Object.entries(toBeUpdated).forEach(([k, v]) => {
+      if (cnt && v) query += " , ";
+      if (v || v === 0) {
+        query += k + " = " + `$${++cnt}`;
+      }
+    });
+    query += ` where booking_id = $${++cnt}
+      returning *`;
+    const readyAtt = Object.values(toBeUpdated).filter((val) => {
+      if (val || val === 0) {
+        return val + "";
+      }
+    });
+    console.log(query);
+    const updatedBooking = await pool.query(query, [...readyAtt, booking_id]);
+    if (updatedBooking.rowCount) return updatedBooking.rows[0];
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const removeBooking = async (id) => {
+  try {
+    const query = `delete from bookings where booking_id = $1`;
+    const res = await pool.query(query, [id]);
+
+    return res.rowCount;
+  } catch (error) {
+    console.log(error.message);
+    return error;
+  }
+};
+
+export { retrieveBookings, editBooking, removeBooking };

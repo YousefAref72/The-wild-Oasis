@@ -1,4 +1,8 @@
-import { retrieveBookings } from "../database/bookingDatabase.js";
+import {
+  editBooking,
+  removeBooking,
+  retrieveBookings,
+} from "../database/bookingDatabase.js";
 import catchAsync from "../utils/catchAsync.js";
 import {
   fieldsQueryHandler,
@@ -43,4 +47,54 @@ const getBookings = catchAsync(async (req, res, next) => {
   });
 });
 
-export { getBookings };
+const updateBooking = catchAsync(async (req, res, next) => {
+  let {
+    start_date,
+    end_date,
+    num_nights,
+    num_guests,
+    cabin_price,
+    total_price,
+    status,
+    is_paid,
+    has_breakfast,
+    observations,
+  } = req.body;
+  const { id: booking_id } = req.params;
+
+  const toBeUpdated = {
+    start_date,
+    end_date,
+    num_nights,
+    num_guests,
+    cabin_price,
+    total_price,
+    status,
+    is_paid,
+    has_breakfast,
+    observations,
+  };
+
+  const results = await editBooking(toBeUpdated, booking_id);
+  if (results.severity === "ERROR") {
+    return next(new AppError("couldn't Update this Booking", 400));
+  }
+  res.status(200).json({
+    status: "successful",
+    data: { results },
+  });
+});
+
+const deleteBooking = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  const results = await removeBooking(id);
+  if (results.severity === "ERROR") {
+    return next(new AppError("couldn't Delete this Booking", 400));
+  }
+  res.status(204).json({
+    status: "successful",
+  });
+});
+
+export { getBookings, updateBooking, deleteBooking };

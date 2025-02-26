@@ -48,3 +48,13 @@ const createSettingsTable = `create Table Settings(
   breakfast_price float,
   primary key (setting_id)
 )`;
+
+const createUsersTable = `create Table Users(
+  user_id int generated always as identity,
+  created_at timestamp  default now(),
+  full_name varchar(100) not null,
+  email varchar(255) not null,
+  password varchar(255) not null,
+  password_confirm varchar(255) not null,
+  primary key (user_id)
+)`;

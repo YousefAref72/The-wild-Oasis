@@ -6,6 +6,7 @@ import cors from "cors";
 import cabinRouter from "./routes/cabinRountes.js";
 import settingRouter from "./routes/settingRoutes.js";
 import bookingRouter from "./routes/bookingRoutes.js";
+import userRouter from "./routes/userRoutes.js";
 
 import { globalErrorHandler } from "./utils/helpers.js";
 import AppError from "./utils/AppError.js";
@@ -30,6 +31,7 @@ app.use(express.json());
 app.use("/api/v1/cabins", cabinRouter);
 app.use("/api/v1/settings", settingRouter);
 app.use("/api/v1/bookings", bookingRouter);
+app.use("/api/v1/users", userRouter);
 app.use("/", (req, res, next) =>
   next(new AppError("No such Route Founded....", 404))
 );

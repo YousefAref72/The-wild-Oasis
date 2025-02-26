@@ -16,6 +16,10 @@ import Modal from "../../ui/Modal";
 import Menus from "../../ui/Menus";
 import { useNavigate } from "react-router-dom";
 import ConfirmDelete from "../../ui/ConfirmDelete";
+import Spinner from "../../ui/Spinner";
+import useCheckout from "../check-in-out/useCheckout";
+import { deleteBooking } from "../../API/bookingsApi";
+import useDeleteBooking from "./useDeleteBooking";
 
 const Cabin = styled.div`
   font-size: 1.6rem;
@@ -65,7 +69,13 @@ function BookingRow({
     "checked-out": "silver",
   };
 
+  const { checkout, isCheckingOut } = useCheckout();
+  const { deleteBooking, isDeleting } = useDeleteBooking();
+
   const navigate = useNavigate();
+
+  if (isCheckingOut || isDeleting) return <Spinner />;
+
   return (
     <Table.Row>
       <Cabin>{name}</Cabin>
@@ -103,7 +113,7 @@ function BookingRow({
             </Menus.Button>
             {status === "unconfirmed" && (
               <Menus.Button
-                onClick={() => navigate(`/bookings/${booking_id}`)}
+                onClick={() => navigate(`/checkin/${booking_id}`)}
                 icon={<HiArrowDownOnSquare />}
               >
                 Check in
@@ -111,7 +121,7 @@ function BookingRow({
             )}
             {status === "checked-in" && (
               <Menus.Button
-                onClick={() => navigate(`/bookings/${booking_id}`)}
+                onClick={() => checkout(booking_id)}
                 icon={<HiArrowUpOnSquare />}
               >
                 Check out
@@ -122,7 +132,11 @@ function BookingRow({
             </Modal.Open>
           </Menus.List>
           <Modal.Window name="delete">
-            <ConfirmDelete resource="Booking" onConfirm disabled={false} />
+            <ConfirmDelete
+              resource="Booking"
+              onConfirm={() => deleteBooking(booking_id)}
+              disabled={false}
+            />
           </Modal.Window>
         </Menus.Menu>
       </Modal>

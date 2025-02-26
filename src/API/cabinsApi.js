@@ -57,7 +57,6 @@ async function uploadImg(image, imageName) {
 
 export const editCabin = async (cabinToEdit) => {
   let { cabin_id, ...editValues } = cabinToEdit;
-  console.log(editValues);
   const imgFile = editValues.image;
   let imageName;
   if (editValues.image) {

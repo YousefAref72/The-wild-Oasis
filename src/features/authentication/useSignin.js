@@ -8,6 +8,10 @@ function saveUserToCookies(user) {
   Cookies.set("user", JSON.stringify(user), { expires: 7 });
 }
 
+function saveTokenToCookies(token) {
+  Cookies.set("token", JSON.stringify(token), { expires: 7 });
+}
+
 function useSignin() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -16,10 +20,9 @@ function useSignin() {
     mutationFn: ({ email, password }) => loginApi(email, password),
 
     onSuccess(data) {
-      // console.log(data);
-      // saving user to cookies after successful login
+      // saving user,token to cookies after successful login
       saveUserToCookies(data.data);
-
+      saveTokenToCookies(data.token);
       toast.success("Successfully loged in");
       queryClient.invalidateQueries({ active: true });
       navigate("/dashboard", { replace: true });

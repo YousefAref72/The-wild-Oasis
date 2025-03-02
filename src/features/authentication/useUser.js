@@ -1,11 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
+import Cookies from "js-cookie";
 
+const getUserFromCookies = () => JSON.parse(Cookies.get("user"));
 function useUser() {
-  const { isLoading, data } = useQuery({
+  const { isLoading, data: user } = useQuery({
     queryKey: ["user"],
-    // queryFn
+    queryFn: getUserFromCookies,
   });
-  return {};
+  return { user, isLoading };
 }
 
 export default useUser;

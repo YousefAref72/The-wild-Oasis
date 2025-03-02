@@ -24,6 +24,7 @@
     "react-hot-toast": "^2.5.2",
     "react-icons": "^4.12.0",
     "react-router-dom": "^6.11.1",
+    "react-scripts": "^5.0.1",
     "styled-components": "^5.3.10",
     "tailwindcss": "^4.0.6"
   },

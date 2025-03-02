@@ -5,15 +5,23 @@ import Input from "../../ui/Input";
 import FormRowVertical from "../../ui/FormRowVertical";
 import SpinnerMini from "../../ui/SpinnerMini";
 import useSignin from "./useSignin";
+import useLogout from "./useLogout";
 
 function LoginForm() {
   const [email, setEmail] = useState("admin@aref.com");
   const [password, setPassword] = useState("yousef123");
   const { login, isLoading } = useSignin();
-
   function handleSubmit(e) {
     e.preventDefault();
-    login({ email: e.target.email.value, password: e.target.password.value });
+    login(
+      { email: e.target.email.value, password: e.target.password.value },
+      {
+        onSettled: () => {
+          setEmail("");
+          setPassword("");
+        },
+      }
+    );
   }
 
   return (

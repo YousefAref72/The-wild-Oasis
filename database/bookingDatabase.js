@@ -86,6 +86,7 @@ const editBooking = async (toBeUpdated, booking_id) => {
     console.log(query);
     const updatedBooking = await pool.query(query, [...readyAtt, booking_id]);
     if (updatedBooking.rowCount) return updatedBooking.rows[0];
+    return false;
   } catch (error) {
     console.log(error);
     throw error;

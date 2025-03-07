@@ -58,6 +58,7 @@ async function uploadImg(image, imageName) {
 export const editCabin = async (cabinToEdit) => {
   let { cabin_id, ...editValues } = cabinToEdit;
   const imgFile = editValues.image;
+  console.log(imgFile);
   let imageName;
   if (editValues.image) {
     imageName = `${Math.random()}-${editValues.image.name}`.replaceAll("/", "");

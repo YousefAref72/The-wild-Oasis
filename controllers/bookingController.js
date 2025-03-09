@@ -2,6 +2,7 @@ import {
   editBooking,
   removeBooking,
   retrieveBookings,
+  retrieveBookingsAfterDate,
 } from "../database/bookingDatabase.js";
 import catchAsync from "../utils/catchAsync.js";
 import {
@@ -9,10 +10,11 @@ import {
   filtersQueryHandler,
   sortQueryHandler,
 } from "../utils/helpers.js";
+import AppError from "../utils/AppError.js";
 
 const validFields = [
   "booking_id",
-  "created_at",
+  "b.created_at",
   "start_date",
   "end_date",
   "num_nights",
@@ -40,6 +42,19 @@ const getBookings = catchAsync(async (req, res, next) => {
   const filters = filtersQueryHandler(req.query, validFields);
   const bookings = await retrieveBookings(fields, filters, sort, page);
 
+  res.status(200).json({
+    status: "successful",
+    results: bookings?.length,
+    data: { bookings },
+  });
+});
+
+const getBookingsAfterDate = catchAsync(async (req, res, next) => {
+  const { date } = req.body;
+  const fields = fieldsQueryHandler(req.query, validFields);
+  console.log(req.query.fields);
+  delete req.query.fields;
+  const bookings = await retrieveBookingsAfterDate(date, fields);
   res.status(200).json({
     status: "successful",
     results: bookings?.length,
@@ -97,4 +112,4 @@ const deleteBooking = catchAsync(async (req, res, next) => {
   });
 });
 
-export { getBookings, updateBooking, deleteBooking };
+export { getBookings, updateBooking, deleteBooking, getBookingsAfterDate };

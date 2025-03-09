@@ -79,7 +79,7 @@ const protect = catchAsync(async (req, res, next) => {
   } else if (req.cookies.jwt) {
     token = req.cookies.jwt;
   }
-
+  token = token.replaceAll('"', "");
   if (!token) {
     throw next(
       new AppError("You are not logged in! Please log in to get access.", 401)
@@ -87,6 +87,7 @@ const protect = catchAsync(async (req, res, next) => {
   }
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
+  // console.log(decoded);
   const user = await getUserById(decoded.id);
   req.user = user;
   // req.locals.user = user;

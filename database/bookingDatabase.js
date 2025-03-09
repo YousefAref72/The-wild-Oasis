@@ -66,6 +66,44 @@ const retrieveBookings = async (fields = [], filters = [], sort = [], page) => {
   if (bookings.rowCount) return bookings.rows;
 };
 
+const retrieveBookingsAfterDate = async (date, fields) => {
+  try {
+    // let query = `select created_at, total_price, cabin_price from bookings where created_at >= $1`;
+    let query = `select `;
+    if (fields.length) {
+      fields.forEach(
+        (field, i) => (query += field + (i !== fields.length - 1 ? " , " : " "))
+      );
+    } else {
+      query += `
+      b.booking_id,
+      b.created_at,
+      b.start_date,
+      b.end_date,
+      b.num_nights,
+      b.num_guests,
+      b.cabin_price,
+      b.total_price,
+      b.status,
+      b.is_paid,
+      b.has_breakfast,
+      b.observations,
+      b.cabin_id,
+      b.guest_id
+      `;
+    }
+    query +=
+      ", g.full_name from Bookings b, guests g where g.guest_id = b.guest_id and b.created_at >= $1";
+    console.log(fields);
+    // console.log(date);
+    const bookings = await pool.query(query, [date]);
+    if (bookings.rowCount) return bookings.rows;
+    return false;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const editBooking = async (toBeUpdated, booking_id) => {
   try {
     let query = `update Bookings SET `;
@@ -105,4 +143,9 @@ const removeBooking = async (id) => {
   }
 };
 
-export { retrieveBookings, editBooking, removeBooking };
+export {
+  retrieveBookings,
+  retrieveBookingsAfterDate,
+  editBooking,
+  removeBooking,
+};

@@ -58,7 +58,7 @@ const updatePassword = async (password, id) => {
                   where user_id = $2 returning *`;
     const res = await pool.query(query, [password, id]);
     if (res.rowCount) return res.rows[0];
-    return false;
+    return {};
   } catch (error) {
     console.log(error);
     throw error;

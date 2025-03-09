@@ -15,7 +15,7 @@ function UpdateUserDataForm() {
     user: { user_id, email, full_name: currentFullName },
   } = useUser();
 
-  const { updateUser, isUpdating } = useUpdateUser();
+  const { updateUser } = useUpdateUser();
 
   const [fullName, setFullName] = useState(currentFullName);
   const [avatar, setAvatar] = useState(null);

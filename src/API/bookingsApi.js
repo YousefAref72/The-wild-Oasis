@@ -8,7 +8,29 @@ const getBookings = async (filter, sort, page) => {
   );
   return data.data.data.bookings;
 };
+const getBookingsAfterDate = async (date) => {
+  try {
+    console.log(date);
+    const response = await axiosInstance.post(
+      `/bookings/afterdate?b.created_at,total_price,cabin_price`,
+      date
+    );
+    // console.log(response);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response ? error.response.data : error.message);
+  }
+};
 
+const getStaysAfterDate = async (date) => {
+  try {
+    // console.log(date);
+    const response = await axiosInstance.post(`/bookings/afterdate`, date);
+    return response.data.data.bookings;
+  } catch (error) {
+    throw new Error(error.response ? error.response.data : error.message);
+  }
+};
 const getBooking = async (id) => {
   const data = await axiosInstance(`/bookings/?booking_id=${id}`);
   return data.data.data.bookings;
@@ -28,4 +50,11 @@ const deleteBooking = async (id) => {
     throw new Error(error.response ? error.response.data : error.message);
   }
 };
-export { getBookings, getBooking, updateBooking, deleteBooking };
+export {
+  getBookings,
+  getBooking,
+  updateBooking,
+  deleteBooking,
+  getBookingsAfterDate,
+  getStaysAfterDate,
+};
